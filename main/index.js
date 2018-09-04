@@ -13,8 +13,8 @@ var client = new Bandwidth({
 app.use(bodyParser.json());
 app.set('port', (process.env.PORT || 3000));
 
-
-var sendMessage = function(params){
+// Creates a multimedia message sent to numbers
+ var sendMessage = function(params){
   client.Message.send({
     //returns a promise
     from : params.from, //your bandwidth number
@@ -22,6 +22,7 @@ var sendMessage = function(params){
     text : "This is what I did today :).....dont respond to this",
     media: "https://s3.amazonaws.com/bwdemos/logo.png"
   })
+
   //calls back the message id number and catches any errors
   .then(function(message){
     console.log(message);
@@ -34,11 +35,9 @@ var sendMessage = function(params){
   });
 }
 
+
 var numbers = {
         to: "9802416513",
         from: "9192457257" //bandwidth number
 };
 sendMessage(numbers);
-//createCall(numbers)
-
-//client.Call.playAudioAdvanced(numbers, options).then(function (res){});
