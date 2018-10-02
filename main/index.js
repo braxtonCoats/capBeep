@@ -3,13 +3,13 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var http = require("http").Server(app);
-const BWN = '9192457257' // Our Bandwidth Phone number 
+const BWN = '8282634970' // Our Bandwidth Phone number 
 let maskedNumber = "9802416513";
 
 const client = new Bandwidth({
-  userId    : "u-55edxgbmkvg42t2j6arbnya",
-  apiToken  : "t-golha5jlb255oe5xmadkhyq",
-  apiSecret : "secwmortbxskvcsruaxqeximdmblybpp6cgnh7i"
+  userId    : "u-i6gl7dfuqapkbzmuqfz2day",
+  apiToken  : "t-kwfvokb5uy5w7mooyheqawy",
+  apiSecret : "tfhex5vvlocvqi7nohqlcl4etterfepxytd2wfq"
 });
 
 app.set('port', (process.env.PORT || 3000));
