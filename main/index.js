@@ -3,20 +3,41 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var http = require("http").Server(app);
+const BWN = '9192457257' // Our Bandwidth Phone number 
+let maskedNumber = "9802416513";
 
-var client = new Bandwidth({
+const client = new Bandwidth({
   userId    : "u-55edxgbmkvg42t2j6arbnya",
   apiToken  : "t-golha5jlb255oe5xmadkhyq",
   apiSecret : "secwmortbxskvcsruaxqeximdmblybpp6cgnh7i"
 });
 
-app.use(bodyParser.json());
 app.set('port', (process.env.PORT || 3000));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-http.listen(app.get('port'), function(){
-    console.log('listening on *: ' + app.get('port'));
+//******* Recieving and sending Messages ************
+
+//set up callback route
+app.post("/callback", function(req, res) {
+  if (req.body.eventType === "sms") {
+    console.log("Incoming msgID: " + req.body.messageId);
+    console.log(req.body);
+    client.Message.send ({
+      from: BWN,
+      to: req.body.from,
+      text: "Message recieved"
+    }).then(message => console.log(message));
+  }
+  else {
+    console.log(req.body);
+  }
+    //callback details are stored in req
+    //and can be used here
 });
+// ******** End Of Messaging **********
 
+// ******** Call masking *************
 const getBaseUrlFromReq = (req) => {
     return 'http://' + req.hostname;
 };
@@ -25,10 +46,7 @@ app.post("/", function (req, res) {
     res.send("Bandwdith_Forward_A_Call");
 });
 
-let FromBWnumber = "9192457257";
-let toNumber = "9802416513";
 
-//OUTBOUND CALLS
 app.post('/out-call', function (req, res) {
     var this_url2 = getBaseUrlFromReq(req);
     if (req.body.eventType === 'answer') {                    //Upon the to-caller answering, bridge the two calls
@@ -70,10 +88,10 @@ app.post('/in-call', function (req, res) {             //When someone calls the 
 });
 
 //Method to create outbound call with '/out-call' callback url, tag used to store inbound callId
-var createCallWithCallback = function(FromBWnumber, this_url, inbound_callid){
+var createCallWithCallback = function(BWN, this_url, inbound_callid){
     return client.Call.create({
-        from: FromBWnumber,
-        to: toNumber,
+        from: BWN,
+        to: maskedNumber,
         callbackUrl: this_url + '/out-call',
         tag: inbound_callid
     })
@@ -87,21 +105,7 @@ var createCallWithCallback = function(FromBWnumber, this_url, inbound_callid){
         console.log("---Outbound call could not be created---");
     })
 };
-
-
-
-
-
-/*var numbers = {
-        to: "9802416513",
-        from: "9192457257" //bandwidth number
-};
-
-client.Call.create({
-    from: "9192457257",
-    to: "9192591068",
-    callbackUrl: "http://1136ad2a.ngrok.io"
-})
-.then(function (id) {
-    console.log();
-})*/
+//listen
+http.listen(app.get('port'), function() {
+    console.log("App listening on PORT " + app.get('port'));
+});
