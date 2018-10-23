@@ -15,7 +15,10 @@
   "homepage": "https://github.com/braxtonCoats/capBeep#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "clone": "^2.1.2",
     "express": "^4.16.3",
+    "mongodb": "^3.1.7",
+    "ngrok": "^3.1.0",
     "node-bandwidth": "^2.6.5"
   }
 }
