@@ -9,28 +9,42 @@ module.exports = {
 	// insert a driver into the database
 	insertRider: function(riderName, riderNumber) {
 		MongoClient.connect(url, function(err, db) {
-  			if (err) throw err;
-  			var dbo = db.db("Driver");
-  			var myobj = { name: riderName, number: riderNumber };
-  			dbo.collection("riders").insertOne(myobj, function(err, res) {
-    				if (err) throw err;
-    				console.log("1 document inserted");
-    			db.close();
-  			});
+			if (err) throw err;
+			var dbo = db.db("Driver");
+			var myobj = { name: riderName, number: riderNumber };
+			dbo.collection("riders").insertOne(myobj, function(err, res) {
+				if (err) throw err;
+				console.log("1 document inserted");
+				db.close();
+			});
 		});
 	},
 
 	connectDriver: function(riderNumber, driverNum) {
 		MongoClient.connect(url, function(err, db) {
-                        if (err) throw err;
-                        var dbo = db.db("Driver");
-                        var myquery = {number: riderNumebr};
+			if (err) throw err;
+			var dbo = db.db("Driver");
+			var myquery = {number: riderNumebr};
 			var newvalues = { $set: {driverNumber: driverNum } };
-                        dbo.collection("riders").updateOne(myquery, newvalues, function(err, res) {        
+			dbo.collection("riders").updateOne(myquery, newvalues, function(err, res) {        
 				if (err) throw err;
-                                console.log("1 document inserted");
-                        db.close();
-                        });
-                });
+				console.log("1 document inserted");
+				db.close();
+			});
+		});
+	},
+
+	getDriver: function(riderNum) {
+		MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+			var dbo = db.db("Driver");
+			var query = { number: riderNum };
+			res = dbo.collection("riders").find(query).toArray(function(err, result) {
+				if (err) throw err;
+				console.log(result);
+				return res[0].driverNumber;
+				db.close();
+			});
+		});
 	}
 }
