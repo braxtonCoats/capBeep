@@ -6,10 +6,10 @@ var http = require("http").Server(app);
 
 // Connecting to Database
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://18.188.38.42:27017/Driver";
 
-var driverQuery = require("./driverQuery.js");
-var riderQuery = require("./riderQuery.js");
+var driverQuery = require("./query/driverQuery.js");
+var riderQuery = require("./query/riderQuery.js");
 
 // For calling and Hailing a driver
 const BWN = '9192457257' // Our Bandwidth Phone number
@@ -114,7 +114,7 @@ var createCallWithCallback = function(BWN, this_url, inbound_callid){
 var textRecieved = function(req, res){
 	  var incomingMsg = req.body.text;
 	  console.log("incoming Message: " + incomingMsg);
-	 
+
 // Logic for driver to submit their information about riding
     if (incomingMsg.match(/driving/gi)) {
 	client.Message.send({
@@ -132,9 +132,9 @@ var textRecieved = function(req, res){
 	}).then(message => console.log(message));
 	}
 
-    
 
-// Logic for a rider to request a driver	  
+
+// Logic for a rider to request a driver
     else if (incomingMsg.match(/ride/gi)){
 		riderNameRecievedText(req, res);
     		client.Message.send ({
@@ -149,7 +149,7 @@ var textRecieved = function(req, res){
 		to: req.body.from,
 		text: "Resond with '________ needs a ride'"
 	}).then(message => console.log(message));
-		
+
 	}
 
 }
@@ -189,7 +189,7 @@ MongoClient.connect(url, function(err, db) {
     dNum = result[0].number;
     return result[0].number;
   });
-}); 
+});
     return result[0].number;
 };
 
@@ -197,4 +197,3 @@ MongoClient.connect(url, function(err, db) {
 http.listen(app.get('port'), function() {
     console.log("App listening on PORT " + app.get('port'));
 });
-
