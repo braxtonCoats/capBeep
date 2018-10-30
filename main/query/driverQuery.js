@@ -27,13 +27,14 @@ module.exports = {
 			var dbo = db.db("Driver");
 
 			// find a driver from the driver collection
-			var myobj = dbo.collection("drivers").findOne(function(err, res) {
+			var myobj = dbo.collection("drivers").findOne().toArray(function(err, res) {
 				if (err) throw err;
 				console.log("driver found.");
+				driverNumber = res[2];
 				db.close();
 			});
 
-			driverNumber = myobj.number;
+			// driverNumber = myobj.number;
 
 			// add the driver to the active collection
 			dbo.collection("active").insertOne(myobj, function(err, res) {
