@@ -3,7 +3,7 @@
 //
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://18.188.38.42:27017/Driver";
 
 module.exports = {
 	// insert a driver into the database

@@ -3,7 +3,7 @@
 //
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://18.188.38.42:27017/Driver";
 
 module.exports = {
 	// insert a driver into the database
@@ -26,7 +26,7 @@ module.exports = {
                         var dbo = db.db("Driver");
                         var myquery = {number: riderNumebr};
 			var newvalues = { $set: {driverNumber: driverNum } };
-                        dbo.collection("riders").updateOne(myquery, newvalues, function(err, res) {        
+                        dbo.collection("riders").updateOne(myquery, newvalues, function(err, res) {
 				if (err) throw err;
                                 console.log("1 document inserted");
                         db.close();
