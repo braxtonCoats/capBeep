@@ -26,6 +26,8 @@ module.exports = {
 			if (err) throw err;
 			var dbo = db.db("Driver");
 
+			console.log("Popping an active driver...");
+
 			// find a driver from the driver collection
 			var myobj = dbo.collection("drivers").findOne(function(err, res) {
 				if (err) throw err;
@@ -33,7 +35,7 @@ module.exports = {
 				db.close();
 			});
 
-			console.log(myobj);
+			driverNumber = myobj["number"];
 
 			// add the driver to the active collection
 			dbo.collection("active").insertOne(myobj, function(err, res) {
