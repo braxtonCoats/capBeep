@@ -32,7 +32,6 @@ module.exports = {
 			var myobj = dbo.collection("drivers").findOne(function(err, res) {
 				if (err) throw err;
 				console.log("driver found.");
-				db.close();
 			});
 
 			driverNumber = myobj["number"];
@@ -41,7 +40,6 @@ module.exports = {
 			dbo.collection("active").insertOne(myobj, function(err, res) {
 				if (err) throw err;
 				console.log("driver added to active collection");
-				db.close();
 			});
 
 			// remove the driver from the driver collection
@@ -77,14 +75,12 @@ module.exports = {
                         var myobj = dbo.collection("active").findOne(function(err, res) {
                                 if (err) throw err;
                                 console.log("active driver found.");
-                                db.close();
                         });
 
                         // add the driver to the active collection
                         dbo.collection("drivers").insertOne(myobj, function(err, res) {
                                 if (err) throw err;
                                 console.log("driver returned to drivers collection");
-                                db.close();
                         });
 
                         // remove the driver from the driver collection
