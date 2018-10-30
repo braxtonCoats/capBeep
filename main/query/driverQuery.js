@@ -31,10 +31,11 @@ module.exports = {
 			// find a driver from the driver collection
 			var myobj = dbo.collection("drivers").findOne(function(err, res) {
 				if (err) throw err;
+				console.log(res);
 				console.log("driver found.");
 			});
 
-			driverNumber = myobj["number"];
+			//driverNumber = myobj["number"];
 
 			// add the driver to the active collection
 			dbo.collection("active").insertOne(myobj, function(err, res) {
