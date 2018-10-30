@@ -21,6 +21,7 @@ module.exports = {
 	},
 
 	popActiveDriver: function(){
+		var driverNumber = "";
 		MongoClient.connect(url, function(err, db) {
 			if (err) throw err;
 			var dbo = db.db("Driver");
@@ -31,6 +32,8 @@ module.exports = {
 				console.log("driver found.");
 				db.close();
 			});
+
+			driverNumber = myobj.number;
 
 			// add the driver to the active collection
 			dbo.collection("active").insertOne(myobj, function(err, res) {
@@ -46,6 +49,7 @@ module.exports = {
 				db.close();
 			});
 		});
+		return driverNumber;
 	},
 
 	checkActive(): function(num){
