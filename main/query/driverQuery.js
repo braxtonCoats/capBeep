@@ -52,7 +52,7 @@ module.exports = {
 		return driverNumber;
 	},
 
-	checkActive(): function(num){
+	checkActive: function(num){
 		MongoClient.connect(url, function(err, db) {
 			if (err) throw err;
 			var dbo = db.db("Driver");
@@ -64,5 +64,33 @@ module.exports = {
 				db.close();
 			});
 		});
+	},
+
+	deactivate: function() {
+		MongoClient.connect(url, function(err, db) {
+                        if (err) throw err;
+                        var dbo = db.db("Driver");
+
+                        // find a driver from the active collection
+                        var myobj = dbo.collection("active").findOne(function(err, res) {
+                                if (err) throw err;
+                                console.log("active driver found.");
+                                db.close();
+                        });
+
+                        // add the driver to the active collection
+                        dbo.collection("drivers").insertOne(myobj, function(err, res) {
+                                if (err) throw err;
+                                console.log("driver returned to drivers collection");
+                                db.close();
+                        });
+
+                        // remove the driver from the driver collection
+                        dbo.collection("active").remove(myobj, function(err, res) {
+                                if (err) throw err;
+                                console.log("driver removed from active collection");
+                                db.close();
+                        });
+                });
 	}
 }
