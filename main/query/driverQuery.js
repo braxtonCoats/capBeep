@@ -35,21 +35,18 @@ module.exports = {
 				driverNumber = result[0].number;
 				myobj = result[0];
 				console.log("The driver's number is: " + driverNumber);
-			});
+				
+				dbo.collection("active").insertOne(myobj, function(err, res) {
+					if (err) throw err;
+					console.log("driver added to active collection");
+				});
 
-			//driverNumber = myobj["number"];
-
-			// add the driver to the active collection
-			dbo.collection("active").insertOne(myobj, function(err, res) {
-				if (err) throw err;
-				console.log("driver added to active collection");
-			});
-
-			// remove the driver from the driver collection
-			dbo.collection("drivers").remove(myobj, function(err, res) {
-				if (err) throw err;
-				console.log("driver removed from driver collection");
-				db.close();
+				// remove the driver from the driver collection
+				dbo.collection("drivers").remove(myobj, function(err, res) {
+					if (err) throw err;
+					console.log("driver removed from driver collection");
+					db.close();
+				});
 			});
 		});
 		return driverNumber;
