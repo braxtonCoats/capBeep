@@ -25,14 +25,16 @@ module.exports = {
 		MongoClient.connect(url, function(err, db) {
 			if (err) throw err;
 			var dbo = db.db("Driver");
+			var myobj;
 
 			console.log("Popping an active driver...");
 
 			// find a driver from the driver collection
-			var myobj = dbo.collection("drivers").findOne(function(err, res) {
+			result = dbo.collection("drivers").find().toArray(function(err, result) {
 				if (err) throw err;
-				console.log(res);
-				console.log("driver found.");
+				driverNumber = result[0].number;
+				myobj = result[0];
+				db.close();
 			});
 
 			//driverNumber = myobj["number"];
@@ -69,27 +71,27 @@ module.exports = {
 
 	deactivate: function() {
 		MongoClient.connect(url, function(err, db) {
-                        if (err) throw err;
-                        var dbo = db.db("Driver");
+			if (err) throw err;
+			var dbo = db.db("Driver");
 
-                        // find a driver from the active collection
-                        var myobj = dbo.collection("active").findOne(function(err, res) {
-                                if (err) throw err;
-                                console.log("active driver found.");
-                        });
+			// find a driver from the active collection
+			var myobj = dbo.collection("active").findOne(function(err, res) {
+				if (err) throw err;
+				console.log("active driver found.");
+			});
 
-                        // add the driver to the active collection
-                        dbo.collection("drivers").insertOne(myobj, function(err, res) {
-                                if (err) throw err;
-                                console.log("driver returned to drivers collection");
-                        });
+			// add the driver to the active collection
+			dbo.collection("drivers").insertOne(myobj, function(err, res) {
+				if (err) throw err;
+				console.log("driver returned to drivers collection");
+			});
 
-                        // remove the driver from the driver collection
-                        dbo.collection("active").remove(myobj, function(err, res) {
-                                if (err) throw err;
-                                console.log("driver removed from active collection");
-                                db.close();
-                        });
-                });
+			// remove the driver from the driver collection
+			dbo.collection("active").remove(myobj, function(err, res) {
+				if (err) throw err;
+				console.log("driver removed from active collection");
+				db.close();
+			});
+		});
 	}
 }
