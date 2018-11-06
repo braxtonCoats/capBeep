@@ -26,6 +26,7 @@ module.exports = {
                         var dbo = db.db("Driver");
                         var myquery = {number: riderNumber};
 			var newvalues = { $set: {driverNumber: driverNum } };
+			console.log("Connecting a driver with number " + driverNum + " to the rider...");
                         dbo.collection("riders").updateOne(myquery, newvalues, function(err, res) {
 				if (err) throw err;
                                 console.log("1 document inserted");
