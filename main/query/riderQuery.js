@@ -24,7 +24,7 @@ module.exports = {
 		MongoClient.connect(url, function(err, db) {
                         if (err) throw err;
                         var dbo = db.db("Driver");
-                        var myquery = {number: riderNumebr};
+                        var myquery = {number: riderNumber};
 			var newvalues = { $set: {driverNumber: driverNum } };
                         dbo.collection("riders").updateOne(myquery, newvalues, function(err, res) {
 				if (err) throw err;
