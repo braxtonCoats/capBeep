@@ -32,5 +32,26 @@ module.exports = {
                         db.close();
                         });
                 });
+	},
+
+	getDriverName: function(riderNumber) {
+		MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+                        var dbo = db.db("Driver");
+			var myquery = {number: riderNumber};
+
+			// find the rider
+                        result = dbo.collection("riders").find(myquery).toArray(function(err, result) {
+                                if (err) throw err;
+                                driverNumber = result[0].driverNumber;
+                                myobj = result[0];
+
+                                dbo.collection("drivers").find({number: driverNumber}).toArray(myobj, function(err, res) {
+                                        if (err) throw err;
+                                        return res[0].name;
+                                });
+
+                        });
+		});
 	}
 }

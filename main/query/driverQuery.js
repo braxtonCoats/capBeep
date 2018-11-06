@@ -87,7 +87,7 @@ module.exports = {
 					console.log("driver removed from active collection");
 					db.close();
 				});
-			});
+			}));
 
 		});
 	}
