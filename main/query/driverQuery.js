@@ -34,7 +34,7 @@ module.exports = {
 				if (err) throw err;
 				driverNumber = result[0].number;
 				myobj = result[0];
-				db.close();
+				console.log("The driver's number is: " + driverNumber);
 			});
 
 			//driverNumber = myobj["number"];
