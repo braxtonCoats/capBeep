@@ -36,20 +36,31 @@ module.exports = {
 				myobj = result[0];
 				console.log("The driver's number is: " + driverNumber);
 
+				var driverNumPromise = new Promise(function(resolve, reject) {
+  					setTimeout(function() {
+    						resolve(driverNumber);
+  					}, 1000);
+				});
+
+				driverNumPromise.then(function(value) {
+					console.log("Within promise: " + value);
+					return value;
+				});
+				
+
 				dbo.collection("active").insertOne(myobj, function(err, res) {
 					if (err) throw err;
 					console.log("driver added to active collection");
 				});
 
 				// remove the driver from the driver collection
-				dbo.collection("drivers").remove(myobj, function(err, res) {
+				dbo.collection("drivers").deleteOne(myobj, function(err, res) {
 					if (err) throw err;
 					console.log("driver removed from driver collection");
 					db.close();
 				});
 			});
 		});
-		return driverNumber;
 	},
 
 	checkActive: function(num){
