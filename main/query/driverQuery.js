@@ -21,7 +21,7 @@ module.exports = {
 	},
 
 	// get the name of the 
-	getDriverName: function(num) driverNameFunc(callback) { 
+	getDriverName: function(num, driverNameFunc(callback) { 
 		MongoClient.connect(url, function(err, db) {
                         if (err) throw err;
                         var dbo = db.db("Driver");
@@ -31,7 +31,7 @@ module.exports = {
 				return callback(retult[0].name);
                         });
                 });
-	},
+	)},
 
 	// pop an active driver from the database and return their phone number
 	popActiveDriver: function popFunc(callback) {
