@@ -20,12 +20,12 @@ module.exports = {
 		});
 	},
 
-	// get the name of the 
-	getDriverName: function(num, callback) { 
+	// get the name of the driver using their phone number 
+	getDriverName: function(arg, callback) { 
 		MongoClient.connect(url, function(err, db) {
                         if (err) throw err;
                         var dbo = db.db("Driver");
-                        dbo.collection("active").find({number: num}).toArray(function(err, result) {
+                        dbo.collection("active").find({number: arg}).toArray(function(err, result) {
                                 if (err) throw err;
                                 db.close();
 				return callback(result[0].name);
