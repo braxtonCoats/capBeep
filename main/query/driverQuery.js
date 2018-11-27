@@ -20,6 +20,19 @@ module.exports = {
 		});
 	},
 
+	// get the name of the 
+	getDriverName: function(num) driverNameFunc(callback) { 
+		MongoClient.connect(url, function(err, db) {
+                        if (err) throw err;
+                        var dbo = db.db("Driver");
+                        dbo.collection("active").find({number: num}).toArray(function(err, result) {
+                                if (err) throw err;
+                                db.close();
+				return callback(retult[0].name);
+                        });
+                });
+	},
+
 	// pop an active driver from the database and return their phone number
 	popActiveDriver: function popFunc(callback) {
 		MongoClient.connect(url, function(err, db) {
