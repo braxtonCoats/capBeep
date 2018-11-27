@@ -38,7 +38,7 @@ module.exports = {
 		MongoClient.connect(url, function(err, db) {
                         if (err) throw err;
                         var dbo = db.db("Driver");
-                        dbo.collection("active").find({driverNumber: arg}).toArray(function(err, result) {
+                        dbo.collection("riders").find({driverNumber: arg}).toArray(function(err, result) {
                                 if (err) throw err;
                                 db.close();
                                 return callback(result[0].name);
