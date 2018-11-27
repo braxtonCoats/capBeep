@@ -37,10 +37,6 @@ module.exports = {
 				myobj = result[0];
 				console.log("The driver's number is: " + driverNumber);
 				
-					
-
-				//throw the value to the variable so that the return statement works...
-				setValToPass(driverNumber);
 
 				dbo.collection("active").insertOne(myobj, function(err, res) {
 					if (err) throw err;
