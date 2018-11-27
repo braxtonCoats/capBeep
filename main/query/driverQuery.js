@@ -3,7 +3,7 @@
 //
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://18.188.38.42:27017/Driver";
+var url = "mongodb://18.188.38.42:27017/Driver"
 
 module.exports = {
 	// insert a driver into the database
@@ -20,33 +20,27 @@ module.exports = {
 		});
 	},
 
-	popActiveDriver: function(){
-		var driverNumber = "";
+	// pop an active driver from the database and return their phone number
+	popActiveDriver: function popFunc(callback) {
 		MongoClient.connect(url, function(err, db) {
 			if (err) throw err;
+
 			var dbo = db.db("Driver");
 			var myobj;
 
 			console.log("Popping an active driver...");
 
 			// find a driver from the driver collection
-			result = dbo.collection("drivers").find().toArray(function(err, result) {
+			dbo.collection("drivers").find().toArray(function(err, result) {
 				if (err) throw err;
 				driverNumber = result[0].number;
 				myobj = result[0];
 				console.log("The driver's number is: " + driverNumber);
-
-				var driverNumPromise = new Promise(function(resolve, reject) {
-  					setTimeout(function() {
-    						resolve(driverNumber);
-  					}, 1000);
-				});
-
-				driverNumPromise.then(function(value) {
-					console.log("Within promise: " + value);
-					return value;
-				});
 				
+					
+
+				//throw the value to the variable so that the return statement works...
+				setValToPass(driverNumber);
 
 				dbo.collection("active").insertOne(myobj, function(err, res) {
 					if (err) throw err;
@@ -59,6 +53,8 @@ module.exports = {
 					console.log("driver removed from driver collection");
 					db.close();
 				});
+
+				return callback(result[0].number);
 			});
 		});
 	},
