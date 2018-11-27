@@ -28,7 +28,7 @@ module.exports = {
                         dbo.collection("active").find({number: num}).toArray(function(err, result) {
                                 if (err) throw err;
                                 db.close();
-				return callback(retult[0].name);
+				return callback(result[0].name);
                         });
                 });
 	},
