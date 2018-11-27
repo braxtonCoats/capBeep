@@ -33,6 +33,19 @@ module.exports = {
                 });
 	},
 
+	// get the name of the rider. Arg is the number of the driver
+	getRiderName: function(arg, callback) {
+		MongoClient.connect(url, function(err, db) {
+                        if (err) throw err;
+                        var dbo = db.db("Driver");
+                        dbo.collection("active").find({driverNumber: arg}).toArray(function(err, result) {
+                                if (err) throw err;
+                                db.close();
+                                return callback(result[0].name);
+                        });
+                });
+        },
+
 	// pop an active driver from the database and return their phone number
 	popActiveDriver: function popFunc(callback) {
 		MongoClient.connect(url, function(err, db) {
