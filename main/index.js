@@ -10,7 +10,7 @@ var riderQuery = require("./query/riderQuery.js");
 
 // For calling and Hailing a driver
 const BWN = '9192457257' // Our Bandwidth Phone number
-let maskedNumber = "9802416513"; // "Driver" number
+let maskedNumber = ""; // "Driver" number
 
 const client = new Bandwidth({
   userId    : "u-55edxgbmkvg42t2j6arbnya",
@@ -90,6 +90,7 @@ app.post('/in-call', function (req, res) {             //When someone calls the 
 
 //Method to create outbound call with '/out-call' callback url, tag used to store inbound callId
 var createCallWithCallback = function(BWN, this_url, inbound_callid){
+  //var driverNum =
   return client.Call.create({
     from: BWN,
     to: maskedNumber,
@@ -117,30 +118,39 @@ var textRecieved = function(req, res){
   console.log("incoming Message: " + incomingMsg);
 
   // Logic for driver to submit their information about riding
-  if (incomingMsg.match(/driving/gi)) {
-    client.Message.send({
-      from: BWN,
-      to: req.body.from,
-      text: "Respond with 'My name is _______"
-    }).then(message => console.log(message));
-  }
-  else if (incomingMsg.match(/name/gi)){
+  if (incomingMsg.match(/is driving/gi)) {
     driverNameRecievedText(req, res);
     client.Message.send({
       from: BWN,
       to: req.body.from,
-      text: "Thank you for driving! You will recieve a text soon with your first rider!"
+      text: "Thank you for driving! You will recieve a text soon with your first rider!" +
+        "Text 'ride complete' once you drop off your rider"
     }).then(message => console.log(message));
+  }
+  else if (incomingMsg.match(/help/gi)){
+    client.Message.send({
+      from: BWN,
+      to: req.body.from,
+      text: "Use the following commands to request a ride or sign up for driving:\n" +
+        "--------------------\n" +
+        "'[Your Name] is driving' to sign up to drive\n" +
+        "'[Your name] needs a ride' to request a ride"
+    }).then(Message => console.log(message));
+  }
+  else if (incomingMsg.match(/ride complete/gi)){
+    driverQuery.deactivate(req.body.from);
+    client.Message.send({
+      from: BWN,
+      to: req.body.from,
+      text: "You'll recieve another rider request soon!"
+    }).then(message => console.log(message));
+
   }
 
   // Logic for a rider to request a driver
   else if (incomingMsg.match(/ride/gi)){
     riderNameRecievedText(req, res);
-    client.Message.send ({
-      from: BWN,
-      to: req.body.from,
-      text: "Your driver is Chase, they're on the way!"
-    }).then(message => console.log(message));
+    assignDriverToRider(req, res);
   }
   else if (incomingMsg.match(/need/gi)){
     client.Message.send({
@@ -149,6 +159,8 @@ var textRecieved = function(req, res){
       text: "Resond with '________ needs a ride'"
     }).then(message => console.log(message));
   }
+
+  // Logic for Driver completing a ride
 }
 // ************ End of Text Logic ********************
 
@@ -156,7 +168,8 @@ var textRecieved = function(req, res){
 var driverNameRecievedText = function(req, res) {
   var incomingmsg = req.body.text;
   var response = incomingmsg.split(" ");
-  var name = response[response.length - 1];
+  var name = response[0];
+  //var name = response[response.length - 1];
   var number = req.body.from;
   driverQuery.insertDriver(name, number);
   console.log("driver name is: " + name);
@@ -170,6 +183,41 @@ var riderNameRecievedText = function(req, res) {
   riderQuery.insertRider(name, number);
   console.log("rider name is: " + name);
 };
+
+var assignDriverToRider = function(req, res) {
+
+  //riderQuery.connectDriver(req.body.from, driverQuery.popActiveDriver());
+  driverQuery.popActiveDriver(function(driverNumItem) {
+          riderQuery.connectDriver(req.body.from, driverNumItem);
+          maskedNumber = driverNumItem;
+          driverQuery.getDriverName(driverNumItem, function(driverNameItem) {
+    // NESTCODE FOR SENDING TEXT MESSAGE
+  var driverName = driverNameItem;
+    client.Message.send ({
+      from: BWN,
+      to: req.body.from,
+      text: driverNameItem + ", your driver, is on the way!"
+    }).then(message => console.log(message));
+    // reference name via "driverNameItem" variable
+
+    driverQuery.getRiderName(driverNumItem, function(riderNameItem) {
+        // NESTCODE FOR SENDING TEXT MESSAGE
+        // reference num via "riderNameItem" variable
+        riderName = riderNameItem//fuction call
+        client.Message.send ({
+          from: BWN,
+          to: maskedNumber,
+          text: riderName + " is ready to be picked up"
+        }).then(message => console.log(message));
+    });
+
+});
+  //here, add the code that sends the text message
+  });
+  //var driverName = riderQuery.getDriverName(req.body.from);
+  //textDriver(req, res, maskedNumber);
+
+}
 // ************* End of text helper methods ***********
 
 // Listen - indicates programming running
