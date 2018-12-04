@@ -156,7 +156,7 @@ var textRecieved = function(req, res){
     client.Message.send({
       from: BWN,
       to: req.body.from,
-      text: "Resond with '________ needs a ride'"
+      text: "Resond with '(needs) needs a ride'"
     }).then(message => console.log(message));
   }
 
@@ -169,7 +169,6 @@ var driverNameRecievedText = function(req, res) {
   var incomingmsg = req.body.text;
   var response = incomingmsg.split(" ");
   var name = response[0];
-  //var name = response[response.length - 1];
   var number = req.body.from;
   driverQuery.insertDriver(name, number);
   console.log("driver name is: " + name);
@@ -196,7 +195,7 @@ var assignDriverToRider = function(req, res) {
     client.Message.send ({
       from: BWN,
       to: req.body.from,
-      text: driverNameItem + ", your driver, is on the way!"
+      text: driverNameItem + ", your driver, is on the way! Your driver needs your location so call this number to speak with them"
     }).then(message => console.log(message));
     // reference name via "driverNameItem" variable
 
@@ -204,10 +203,11 @@ var assignDriverToRider = function(req, res) {
         // NESTCODE FOR SENDING TEXT MESSAGE
         // reference num via "riderNameItem" variable
         riderName = riderNameItem//fuction call
+        riderLocation =
         client.Message.send ({
           from: BWN,
           to: maskedNumber,
-          text: riderName + " is ready to be picked up"
+          text: riderName + " is ready to be picked up at " + riderLocation
         }).then(message => console.log(message));
     });
 
