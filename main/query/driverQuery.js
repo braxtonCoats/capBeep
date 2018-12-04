@@ -23,28 +23,28 @@ module.exports = {
 	// get the name of the driver using their phone number 
 	getDriverName: function(arg, callback) { 
 		MongoClient.connect(url, function(err, db) {
-                        if (err) throw err;
-                        var dbo = db.db("Driver");
-                        dbo.collection("active").find({number: arg}).toArray(function(err, result) {
-                                if (err) throw err;
-                                db.close();
+			if (err) throw err;
+			var dbo = db.db("Driver");
+			dbo.collection("active").find({number: arg}).toArray(function(err, result) {
+				if (err) throw err;
+				db.close();
 				return callback(result[0].name);
-                        });
-                });
+			});
+		});
 	},
 
 	// get the name of the rider. Arg is the number of the driver
 	getRiderName: function(arg, callback) {
 		MongoClient.connect(url, function(err, db) {
-                        if (err) throw err;
-                        var dbo = db.db("Driver");
-                        dbo.collection("riders").find({driverNumber: arg}).toArray(function(err, result) {
-                                if (err) throw err;
-                                db.close();
-                                return callback(result[0].name);
-                        });
-                });
-        },
+			if (err) throw err;
+			var dbo = db.db("Driver");
+			dbo.collection("riders").find({driverNumber: arg}).toArray(function(err, result) {
+				if (err) throw err;
+				db.close();
+				return callback(result[0].name);
+			});
+		});
+	},
 
 	// pop an active driver from the database and return their phone number
 	popActiveDriver: function popFunc(callback) {
@@ -62,7 +62,7 @@ module.exports = {
 				driverNumber = result[0].number;
 				myobj = result[0];
 				console.log("The driver's number is: " + driverNumber);
-				
+
 
 				dbo.collection("active").insertOne(myobj, function(err, res) {
 					if (err) throw err;
@@ -117,6 +117,20 @@ module.exports = {
 					db.close();
 				});
 			}));
+
+		});
+	},
+
+	removeDriver: function(num) {
+		MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+			var dbo = db.db("Driver");
+
+			// Remove the driver from the driver collection
+			dbo.collection("drivers").remove({number: num}, function(err, res) {
+				if (err) throw err;
+				console.log("driver removed from driver queue");
+			});
 
 		});
 	}
