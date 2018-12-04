@@ -46,10 +46,11 @@ module.exports = {
 		});
 	},
 
+
 	// pop an active driver from the database and return their phone number
 	popActiveDriver: function popFunc(callback) {
 		MongoClient.connect(url, function(err, db) {
-			if (err) throw err;
+			if (err) return callback("+0");
 
 			var dbo = db.db("Driver");
 			var myobj;
@@ -81,7 +82,7 @@ module.exports = {
 		});
 	},
 
-	checkActive: function(num){
+	checkActive: function(num) {
 		MongoClient.connect(url, function(err, db) {
 			if (err) throw err;
 			var dbo = db.db("Driver");
