@@ -46,6 +46,21 @@ module.exports = {
 		});
 	},
 
+	driversAvailable: function availFunc(callback) {
+		MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+                        var dbo = db.db("Driver");
+			dbo.collection("drivers").count(function(err, result) {
+                                if (err) throw err;
+				db.close();
+				if (result == 0)
+					return callback(false);
+				else
+					return callback(true);
+                        });
+		});
+	},
+
 
 	// pop an active driver from the database and return their phone number
 	popActiveDriver: function popFunc(callback) {
