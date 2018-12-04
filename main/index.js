@@ -124,7 +124,7 @@ var textRecieved = function(req, res){
       from: BWN,
       to: req.body.from,
       text: "Thank you for driving! You will recieve a text soon with your first rider!" +
-        "Text 'ride complete' once you drop off your rider"
+        "Text 'ride complete' once you drop off your rider. \n Type 'done driving' when you finish beeping. "
     }).then(message => console.log(message));
   }
   else if (incomingMsg.match(/help/gi)){
@@ -149,14 +149,34 @@ var textRecieved = function(req, res){
 
   // Logic for a rider to request a driver
   else if (incomingMsg.match(/ride/gi)){
-    riderNameRecievedText(req, res);
-    assignDriverToRider(req, res);
+    checkDrivers(req, res);
+    //riderNameRecievedText(req, res);
+    //assignDriverToRider(req, res);
   }
   else if (incomingMsg.match(/need/gi)){
     client.Message.send({
       from: BWN,
       to: req.body.from,
       text: "Resond with '(needs) needs a ride'"
+    }).then(message => console.log(message));
+  }
+
+  // Driver isn't drivning anymore
+  else if (incomingMsg.match(/done driving/gi)){
+    driverQuery.removeDriver(req.body.from);
+    client.Message.send({
+      from: BWN,
+      to: req.body.from,
+      text: "Thanks for driving!"
+    }).then(message => console.log(message));
+  }
+
+  // Command not understood
+  else {
+    client.Message.send({
+      from: BWN,
+      to: req.body.from,
+      text: "Message not understood, reply 'help' for a list of commands"
     }).then(message => console.log(message));
   }
 
@@ -183,6 +203,21 @@ var riderNameRecievedText = function(req, res) {
   console.log("rider name is: " + name);
 };
 
+var checkDrivers = function(req, res) {
+  driverQuery.driversAvailable(function(available) {
+    if (available == false){
+    client.Message.send ({
+      from: BWN,
+      to: req.body.from,
+      text: "No drivers available at this time, please try again later"
+    }).then(message => console.log(message));
+    }
+    else if (available == true){
+    riderNameRecievedText(req, res);
+      assignDriverToRider(req, res);
+    }
+  })
+}
 var assignDriverToRider = function(req, res) {
 
   //riderQuery.connectDriver(req.body.from, driverQuery.popActiveDriver());
@@ -207,11 +242,12 @@ var assignDriverToRider = function(req, res) {
         client.Message.send ({
           from: BWN,
           to: maskedNumber,
-          text: riderName + " is ready to be picked up at " + riderLocation
+          text: riderName + " is ready to be picked up!"
         }).then(message => console.log(message));
     });
 
 });
+//}
   //here, add the code that sends the text message
   });
   //var driverName = riderQuery.getDriverName(req.body.from);
