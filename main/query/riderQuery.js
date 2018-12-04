@@ -20,20 +20,6 @@ module.exports = {
 		});
 	},
 
-	// Insert rider and store the address
-	insertRider: function(riderName, riderNumber, riderLocation) {
-                MongoClient.connect(url, function(err, db) {
-                        if (err) throw err;
-                        var dbo = db.db("Driver");
-                        var myobj = { name: riderName, number: riderNumber, loc: riderLocation };
-                        dbo.collection("riders").insertOne(myobj, function(err, res) {
-                                if (err) throw err;
-                                console.log("1 document inserted");
-                        db.close();
-                        });
-                });
-        },
-
 	connectDriver: function(riderNumber, driverNum) {
 		MongoClient.connect(url, function(err, db) {
                         if (err) throw err;
